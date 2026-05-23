@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { LiteraryCard } from "@/components/ui/literary-card";
-import { InteractiveTravelCard } from "@/components/ui/3d-card";
+import { LiteraturaSection } from "@/components/portfolio/LiteraturaSection";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -24,7 +24,7 @@ const categories: Category[] = [
   {
     id: "contos",
     title: "Meus contos",
-    description: "Narrativas ficcionais originais",
+    description: "Narrativas curtas sobre memória, espaço urbano e o silêncio entre as coisas.",
     posts: [
       {
         id: "cavalo-de-pijamas",
@@ -55,7 +55,7 @@ const categories: Category[] = [
   {
     id: "resenhas",
     title: "Resenha crítica",
-    description: "Análises e reflexões sobre obras literárias",
+    description: "Leituras atentas sobre romances, ensaios e poesia que marcaram descobertas.",
     posts: [
       {
         id: "revolucao-dos-bichos",
@@ -130,55 +130,38 @@ export const Writing = () => {
     );
   }
 
+  const literaturaCards = categories.map((category, index) => {
+    const textCount = category.posts.length;
+    const countLabel =
+      category.id === "resenhas"
+        ? `${textCount} ${textCount === 1 ? "resenha" : "resenhas"}`
+        : `${textCount} ${textCount === 1 ? "texto" : "textos"}`;
+
+    return {
+      id: category.id,
+      href:
+        category.id === "contos"
+          ? "/literatura/meus-contos"
+          : "/literatura/resenha-critica",
+      num: String(index + 1).padStart(2, "0"),
+      label: category.id === "contos" ? "Ficção breve" : "Análise crítica",
+      title: category.title,
+      description: category.description,
+      countLabel,
+      illustration: category.id === "contos" ? ("books" as const) : ("open-book" as const),
+    };
+  });
+
   return (
-    <section className="no-select">
-      <div className="mx-auto max-w-6xl px-6 py-10">
-        <motion.header
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-12 text-center"
-        >
-          <h1 className="text-3xl font-bold" style={{ fontFamily: 'Didot, serif' }}>
-            Literatura
-          </h1>
-          <p className="mt-1 text-muted-foreground">Meus textos publicados</p>
-        </motion.header>
-
-        <div className="flex flex-col md:flex-row gap-8 justify-center items-center">
-          {categories.map((category, index) => {
-            const getImageUrl = (categoryId: string) => {
-              if (categoryId === 'contos') {
-                return 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?q=80&w=2128&auto=format&fit=crop&ixlib=rb-4.0.3';
-              }
-              return 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=2187&auto=format&fit=crop&ixlib=rb-4.0.3';
-            };
-
-            return (
-              <motion.div
-                key={category.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                style={{ perspective: "1000px" }}
-              >
-                <InteractiveTravelCard
-                  title={category.title}
-                  subtitle={category.description}
-                  imageUrl={getImageUrl(category.id)}
-                  actionText="Leia mais"
-                  href="#"
-                  onActionClick={() => {
-                    const path = category.id === 'contos' ? '/literatura/meus-contos' : 
-                               category.id === 'resenhas' ? '/literatura/resenha-critica' : 
-                               `/literatura/${category.id}`;
-                    navigate(path);
-                  }}
-                />
-              </motion.div>
-            );
-          })}
-        </div>
-      </div>
+    <section className="no-select bg-[#fafaf8] min-h-[calc(100vh-180px)]">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="mx-auto max-w-[1200px] px-4 py-10"
+      >
+        <LiteraturaSection cards={literaturaCards} />
+      </motion.div>
     </section>
   );
 };
